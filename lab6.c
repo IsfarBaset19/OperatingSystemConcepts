@@ -12,8 +12,8 @@
 #define KEY 0x1111
 
 
-struct sembuf p = { 0, -1, SEM_UNDO};
-struct sembuf v = { 0, +1, SEM_UNDO};
+struct sembuf waitop = { 0, -1, SEM_UNDO};
+struct sembuf sigop = { 0, +1, SEM_UNDO};
 
 int main (int argc, char* argv[])
 {
@@ -65,7 +65,7 @@ int main (int argc, char* argv[])
       for (i=0; i<loop; i++) {
 
 	      // semapohore wait operation
-	      if(semop(semId, &p, 1)== -1) {
+	      if(semop(semId, &waitop, 1)== -1) {
               perror("Error: wait semop");
               exit(EXIT_FAILURE);
 	      }
@@ -75,7 +75,7 @@ int main (int argc, char* argv[])
 	       shmPtr[1] = temp;
 
 	       // semaphore signal operation
-	       if (semop(semId, &v, 1) == -1) {
+	       if (semop(semId, &sigop, 1) == -1) {
                perror("Error: signal semop");
                exit(EXIT_FAILURE);     
 	       }
@@ -91,7 +91,7 @@ int main (int argc, char* argv[])
       for (i=0; i<loop; i++) {
 
 	      //semaphore wait opearation
-              if (semop(semId, &p, 1) == -1) {
+              if (semop(semId, &waitop, 1) == -1) {
               perror("Error: wait semop");
              exit(EXIT_FAILURE);
 	      }
@@ -102,7 +102,7 @@ int main (int argc, char* argv[])
 	       shmPtr[1] = temp;
           
           //sempahore signalling
-          if (semop(semId, &v, 1) == -1) {
+          if (semop(semId, &sigop, 1) == -1) {
           perror("Error: signal semop");
           exit(EXIT_FAILURE);      
 	  }
